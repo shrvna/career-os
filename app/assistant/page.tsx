@@ -4,291 +4,613 @@ import { useEffect, useState } from "react";
 import { generateCareers } from "@/lib/careerEngine";
 
 export default function AssistantPage() {
+
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [profile, setProfile] = useState(null);
-  const [careers, setCareers] = useState([]);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [profile, setProfile] = useState<any>(null);
+  const [careers, setCareers] = useState<any[]>([]);
+  const [typing, setTyping] = useState(false);
+
 
   useEffect(() => {
+
     const data = localStorage.getItem("careerProfile");
 
-    if (data) {
+    if(data){
+
       const parsed = JSON.parse(data);
+
       setProfile(parsed);
 
       const generated = generateCareers(parsed);
+
       setCareers(generated);
     }
 
+
     setMessages([
       {
-        role: "bot",
+        role:"bot",
         text:
-          "Hi 👋 I'm your Career OS Co-Pilot. I can help you understand careers, skills, salary expectations, future pathways, and what fits you best.",
-        suggestions: [
+        "Hi 👋 I'm Career OS Co-Pilot. I analyse your interests, skills and career goals to guide your future pathway.",
+        suggestions:[
           "What career suits me?",
           "What skills should I learn?",
           "Expected salary?",
-          "What is my future path?"
+          "Show my future path?"
         ]
       }
     ]);
-  }, []);
 
-  const getAIResponse = (question) => {
+  },[]);
+
+
+
+  const getAIResponse=(question:string)=>{
+
+
     const lower = question.toLowerCase();
 
-    if (!profile) {
+
+    if(!profile){
+
       return {
-        text:
-          "Please complete your profile first so I can personalize recommendations.",
-        suggestions: ["Go to profile"]
-      };
+        text:"Please complete your career profile first.",
+        suggestions:["Create profile"]
+      }
+
     }
+
 
     const topCareer = careers[0];
 
-    // BEST CAREER
-    if (
+
+    if(
       lower.includes("career") ||
-      lower.includes("suitable") ||
-      lower.includes("best for me") ||
-      lower.includes("what suits me")
-    ) {
+      lower.includes("suit")
+    ){
+
       return {
-        text: `Based on your profile (${profile.stage}, ${profile.interest}), your strongest match right now is ${topCareer?.title} (${topCareer?.match}% match). This recommendation aligns with your interests, career stage, and long-term growth potential.`,
-        suggestions: [
+
+        text:
+        `Based on your profile, your strongest match is ${topCareer?.title} with ${topCareer?.match}% compatibility. This pathway matches your ${profile.interest} interest and current career stage.`,
+
+        suggestions:[
           "Why this career?",
           "Expected salary?",
-          "What skills should I learn?"
-        ]
-      };
-    }
-
-    // WHY
-    if (
-      lower.includes("why") ||
-      lower.includes("reason")
-    ) {
-      return {
-        text: `Career OS recommends ${topCareer?.title} because it closely matches your ${profile.interest} interest and current ${profile.stage} stage. Users with similar profiles often grow well in this pathway.`,
-        suggestions: [
-          "Future path?",
-          "What skills matter?"
-        ]
-      };
-    }
-
-    // SALARY
-    if (
-      lower.includes("salary") ||
-      lower.includes("pay") ||
-      lower.includes("income")
-    ) {
-      return {
-        text: `For your recommended pathways, salary typically ranges between RM3K–RM10K+ depending on specialization, experience, and market demand across Asia.`,
-        suggestions: [
-          "Highest paying path?",
           "Future path?"
         ]
-      };
+
+      }
+
     }
 
-    // SKILLS
-    if (
-      lower.includes("skill") ||
-      lower.includes("learn") ||
-      lower.includes("improve")
-    ) {
-      let skillReply = "";
 
-      if (profile.interest === "Fashion") {
-        skillReply =
-          "Recommended skills: sewing, pattern making, portfolio building, branding, fashion illustration, and digital marketing.";
-      }
 
-      if (profile.interest === "Business") {
-        skillReply =
-          "Recommended skills: marketing, negotiation, leadership, analytics, communication, and networking.";
-      }
-
-      if (profile.interest === "Tech") {
-        skillReply =
-          "Recommended skills: coding, UI/UX, software tools, problem-solving, and portfolio projects.";
-      }
+    if(
+      lower.includes("why")
+    ){
 
       return {
-        text: skillReply,
-        suggestions: [
-          "Best career for me?",
-          "Future salary?"
-        ]
-      };
-    }
 
-    // FUTURE PATH
-    if (
-      lower.includes("future") ||
-      lower.includes("path") ||
-      lower.includes("trajectory")
-    ) {
-      return {
-        text: `Your likely progression looks like: Learning → Skill Building → Entry Role → Specialization → Leadership or Entrepreneurship. Your strongest projected path currently aligns with ${topCareer?.title}.`,
-        suggestions: [
+        text:
+        `${topCareer?.title} is recommended because it aligns with your interest area, market demand and long-term growth opportunities.`,
+
+        suggestions:[
           "What skills should I learn?",
-          "How long will it take?"
+          "Salary expectation?"
         ]
-      };
+
+      }
+
     }
 
-    // TIME
-    if (
-      lower.includes("how long") ||
-      lower.includes("time")
-    ) {
+
+
+    if(
+      lower.includes("salary") ||
+      lower.includes("pay")
+    ){
+
       return {
+
         text:
-          "Most career paths take around 1–3 years to gain traction and 5–10 years for strong specialization or leadership roles.",
-        suggestions: [
-          "Future salary?",
-          "Best path for me?"
+        `Career opportunities in this field usually start around RM3K–RM6K and can grow beyond RM15K depending on experience, specialization and leadership level.`,
+
+        suggestions:[
+          "Future progression?",
+          "Required skills?"
         ]
-      };
+
+      }
+
     }
 
-    // FASHION VS BUSINESS
-    if (
-      lower.includes("fashion") &&
-      lower.includes("business")
-    ) {
+
+
+    if(
+      lower.includes("skill") ||
+      lower.includes("learn")
+    ){
+
+      let skills =
+      "Recommended skills: ";
+
+      if(profile.interest==="Tech"){
+
+        skills +=
+        "Programming, AI tools, cloud computing, cybersecurity, UI/UX and software engineering practices.";
+
+      }
+
+      else if(profile.interest==="Business"){
+
+        skills +=
+        "Leadership, communication, marketing analytics, negotiation and strategic thinking.";
+
+      }
+
+      else{
+
+        skills +=
+        "Portfolio development, communication, digital tools and industry knowledge.";
+
+      }
+
+
       return {
-        text:
-          "Fashion aligns more strongly with your current profile, while business strengthens long-term stability and entrepreneurship potential. Combining both may create the strongest outcome.",
-        suggestions: [
-          "What should I study?",
-          "Future path?"
+
+        text:skills,
+
+        suggestions:[
+          "Best career option?",
+          "Show future path"
         ]
-      };
+
+      }
+
     }
 
-    // DEFAULT RESPONSE
+
+
+    if(
+      lower.includes("future") ||
+      lower.includes("path")
+    ){
+
+      return {
+
+        text:
+        `Your projected journey:
+Learning → Skill Development → Entry Role → Specialist → Leadership.
+Your strongest future direction is ${topCareer?.title}.`,
+
+        suggestions:[
+          "What skills matter?",
+          "Expected salary?"
+        ]
+
+      }
+
+    }
+
+
+
     return {
-      text: `Based on your profile (${profile.age}, ${profile.stage}, ${profile.interest}), I recommend exploring your Dashboard recommendations first. Try asking me about career fit, salary, skills, or your future path.`,
-      suggestions: [
+
+      text:
+      `I analysed your profile (${profile.interest}, ${profile.stage}). Explore your dashboard recommendations to discover suitable careers.`,
+
+      suggestions:[
         "What career suits me?",
-        "Expected salary?",
-        "Future path?"
+        "What skills should I learn?"
       ]
-    };
-  };
 
-  const sendMessage = (text = input) => {
-    if (!text.trim()) return;
+    }
 
-    const userMessage = {
-      role: "user",
-      text
-    };
+  }
 
-    const ai = getAIResponse(text);
 
-    const botMessage = {
-      role: "bot",
-      text: ai.text,
-      suggestions: ai.suggestions
-    };
 
-    setMessages((prev) => [
+
+  const sendMessage=(text=input)=>{
+
+
+    if(!text.trim()) return;
+
+
+    setMessages(prev=>[
       ...prev,
-      userMessage,
-      botMessage
+      {
+        role:"user",
+        text
+      }
     ]);
 
+
     setInput("");
-  };
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    setTyping(true);
 
-      {/* HEADER */}
-      <div>
-        <h1 className="text-4xl font-bold">
-          Career OS Co-Pilot
-        </h1>
 
-        <p className="text-gray-500 mt-2">
-          Your AI-powered career guide
-        </p>
-      </div>
 
-      {/* CHAT AREA */}
-      <div className="mt-6 bg-white border rounded-2xl p-5 h-[500px] overflow-y-auto shadow-sm">
+    setTimeout(()=>{
 
-        {messages.map((msg, i) => (
-          <div key={i} className="mb-5">
 
-            <div
-              className={`flex ${
-                msg.role === "user"
-                  ? "justify-end"
-                  : "justify-start"
-              }`}
-            >
-              <div
-                className={`max-w-[75%] px-4 py-3 rounded-2xl ${
-                  msg.role === "user"
-                    ? "bg-black text-white"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {msg.text}
-              </div>
-            </div>
+      const ai=getAIResponse(text);
 
-            {/* SUGGESTIONS */}
-            {msg.role === "bot" &&
-              msg.suggestions && (
-                <div className="flex flex-wrap gap-2 mt-2 ml-2">
-                  {msg.suggestions.map((s, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => sendMessage(s)}
-                      className="text-xs bg-gray-200 px-3 py-2 rounded-full hover:bg-gray-300 transition"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              )}
-          </div>
-        ))}
-      </div>
 
-      {/* INPUT */}
-      <div className="mt-4 flex gap-3">
+      setMessages(prev=>[
+        ...prev,
+        {
+          role:"bot",
+          text:ai.text,
+          suggestions:ai.suggestions
+        }
+      ]);
 
-        <input
-          type="text"
-          placeholder="Ask about your career..."
-          value={input}
-          onChange={(e) =>
-            setInput(e.target.value)
-          }
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              sendMessage();
-            }
-          }}
-          className="flex-1 border rounded-xl px-4 py-3 bg-white"
-        />
 
-        <button
-          onClick={() => sendMessage()}
-          className="bg-black text-white px-6 rounded-xl hover:opacity-90 transition"
-        >
-          Send
-        </button>
-      </div>
-    </div>
-  );
+      setTyping(false);
+
+
+    },700);
+
+
+
+  }
+
+
+
+
+return (
+
+<div className="
+min-h-screen
+bg-gradient-to-br
+from-indigo-50
+via-white
+to-purple-50
+p-8
+">
+
+
+{/* HEADER */}
+
+<div className="flex items-center gap-4">
+
+
+<div className="
+w-14
+h-14
+rounded-full
+bg-gradient-to-r
+from-indigo-600
+to-purple-600
+flex
+items-center
+justify-center
+text-white
+text-2xl
+">
+🤖
+</div>
+
+
+<div>
+
+<h1 className="
+text-4xl
+font-bold
+bg-gradient-to-r
+from-indigo-700
+to-purple-700
+text-transparent
+bg-clip-text
+">
+
+Career OS Co-Pilot
+
+</h1>
+
+
+<p className="text-gray-500">
+
+Your AI-powered career navigation assistant
+
+</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+{/* AI INSIGHT CARD */}
+
+{profile && careers.length>0 && (
+
+<div className="
+mt-6
+bg-white
+rounded-3xl
+shadow-md
+border
+p-6
+">
+
+
+<h2 className="
+font-semibold
+text-lg
+">
+
+AI Career Insight
+
+</h2>
+
+
+<div className="
+mt-3
+flex
+justify-between
+items-center
+">
+
+
+<div>
+
+<p className="text-gray-500 text-sm">
+Recommended pathway
+</p>
+
+
+<p className="text-xl font-bold">
+{careers[0]?.title}
+</p>
+
+
+</div>
+
+
+
+<div className="
+bg-indigo-100
+text-indigo-700
+px-5
+py-3
+rounded-2xl
+font-bold
+">
+
+{careers[0]?.match}% Match
+
+</div>
+
+
+</div>
+
+
+</div>
+
+)}
+
+
+
+
+
+{/* CHAT */}
+
+<div className="
+mt-6
+bg-white
+rounded-3xl
+shadow-lg
+border
+p-6
+h-[480px]
+overflow-y-auto
+">
+
+
+{
+messages.map((msg,i)=>(
+
+
+<div key={i} className="mb-5">
+
+
+<div className={`
+flex
+${msg.role==="user"
+?"justify-end"
+:"justify-start"}
+`}>
+
+
+
+<div className={`
+max-w-[75%]
+px-5
+py-4
+rounded-3xl
+shadow-sm
+
+${
+msg.role==="user"
+
+?
+"bg-indigo-600 text-white"
+
+:
+"bg-gray-100 text-gray-800"
+
+}
+
+`}>
+
+{msg.text}
+
+</div>
+
+
+</div>
+
+
+
+{
+msg.suggestions &&
+
+<div className="
+flex
+flex-wrap
+gap-2
+mt-3
+">
+
+
+{
+msg.suggestions.map((s:string,index:number)=>(
+
+
+<button
+
+key={index}
+
+onClick={()=>sendMessage(s)}
+
+className="
+px-4
+py-2
+rounded-full
+bg-indigo-50
+text-indigo-700
+text-sm
+hover:bg-indigo-100
+transition
+"
+
+>
+
+{s}
+
+</button>
+
+
+))
+
+}
+
+
+</div>
+
+}
+
+
+
+</div>
+
+
+))
+
+}
+
+
+{
+typing &&
+
+<div className="
+text-gray-400
+text-sm
+animate-pulse
+">
+
+Career OS is analysing...
+
+</div>
+
+}
+
+
+</div>
+
+
+
+
+
+{/* INPUT */}
+
+<div className="
+mt-5
+flex
+gap-3
+">
+
+
+<input
+
+value={input}
+
+onChange={(e)=>setInput(e.target.value)}
+
+onKeyDown={(e)=>{
+
+if(e.key==="Enter")
+sendMessage();
+
+}}
+
+placeholder="
+Ask Career OS anything...
+"
+
+className="
+flex-1
+rounded-2xl
+border
+px-5
+py-4
+outline-none
+focus:ring-2
+focus:ring-indigo-400
+"
+
+/>
+
+
+<button
+
+onClick={()=>sendMessage()}
+
+className="
+bg-gradient-to-r
+from-indigo-600
+to-purple-600
+text-white
+px-8
+rounded-2xl
+font-semibold
+hover:scale-105
+transition
+"
+
+>
+
+Send
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+)
+
+
 }

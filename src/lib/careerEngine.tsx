@@ -1,9 +1,9 @@
-export function generateCareers(profile) {
+export function generateCareers(profile: any) { 
   if (!profile) return [];
 
   const { age, stage, interest } = profile;
 
-  let base = [];
+  let base: any[] = []; 
 
   // --------------------
   // CAREER MODELS

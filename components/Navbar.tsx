@@ -3,51 +3,110 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Navbar() {
-  const pathname = usePathname();
+export default function Navbar(){
 
-  const isActive = (path) => pathname === path;
+const pathname = usePathname();
 
-  const navItems = [
+const navItems = [
     { name: "Dashboard", path: "/dashboard" },
     { name: "Assistant", path: "/assistant" },
     { name: "Roadmap", path: "/roadmap" },
+    { name: "Twins", path: "/twins" },
     { name: "Profile", path: "/profile" },
     { name: "Feedback", path: "/feedback" },
-  ];
+];
 
-  return (
-    <div className="sticky top-0 z-50 backdrop-blur-md bg-white/70 border-b">
 
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+return(
 
-        {/* LOGO */}
-        <Link href="/">
-          <div className="font-bold text-lg tracking-tight">
-            Career OS
-          </div>
-        </Link>
+<nav className="
+sticky top-0
+z-50
+border-b
+bg-white/80
+backdrop-blur-xl
+">
 
-        {/* NAV ITEMS */}
-        <div className="flex gap-2">
+<div className="
+max-w-7xl
+mx-auto
+px-6
+py-4
+flex
+justify-between
+items-center
+">
 
-          {navItems.map((item) => (
-            <Link key={item.path} href={item.path}>
-              <div
-                className={`px-4 py-2 rounded-xl text-sm transition-all duration-200 ${
-                  isActive(item.path)
-                    ? "bg-black text-white shadow-md"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                {item.name}
-              </div>
-            </Link>
-          ))}
 
-        </div>
+<Link href="/dashboard">
 
-      </div>
-    </div>
-  );
+<div className="
+font-bold
+text-xl
+tracking-tight
+">
+
+Career OS
+
+<span className="text-indigo-600">
+ AI
+</span>
+
+</div>
+
+</Link>
+
+
+<div className="flex gap-2">
+
+{
+navItems.map(item=>(
+
+<Link
+key={item.path}
+href={item.path}
+>
+
+<div
+className={`
+px-4
+py-2
+rounded-lg
+text-sm
+transition
+
+${
+pathname===item.path
+
+?
+"bg-slate-900 text-white"
+
+:
+
+"text-slate-600 hover:bg-slate-100"
+
+}
+
+`}
+>
+
+{item.name}
+
+</div>
+
+
+</Link>
+
+))
+}
+
+</div>
+
+
+</div>
+
+</nav>
+
+)
+
 }

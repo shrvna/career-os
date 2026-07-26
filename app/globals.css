@@ -1,26 +1,133 @@
 @import "tailwindcss";
 
+/* ================================
+   CAREER OS DESIGN SYSTEM
+================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+
+  --primary: #2563eb;
+  --secondary: #0f172a;
 }
+
 
 @theme inline {
+
   --color-background: var(--background);
+
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --font-sans: var(--font-inter);
+
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+
+/* ================================
+   BASE STYLE
+================================ */
+
+html {
+  scroll-behavior: smooth;
 }
+
 
 body {
+
   background: var(--background);
+
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family: var(--font-inter),
+    Inter,
+    Arial,
+    Helvetica,
+    sans-serif;
+
+}
+
+
+
+/* ================================
+   PREMIUM CARD STYLE
+================================ */
+
+.card {
+
+  background: white;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 4px 20px rgba(15,23,42,0.05);
+
+  transition: all 0.25s ease;
+
+}
+
+
+.card:hover {
+
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 12px 30px rgba(15,23,42,0.08);
+
+}
+
+
+
+/* ================================
+   BUTTON STYLE
+================================ */
+
+.btn-primary {
+
+  background:#0f172a;
+
+  color:white;
+
+  padding:14px 28px;
+
+  border-radius:14px;
+
+  font-weight:600;
+
+  transition:all .2s ease;
+
+}
+
+
+.btn-primary:hover {
+
+  transform:translateY(-2px);
+
+  opacity:.9;
+
+}
+
+
+
+/* ================================
+   TEXT
+================================ */
+
+
+.gradient-text {
+
+  background:
+  linear-gradient(
+    90deg,
+    #2563eb,
+    #0f172a
+  );
+
+  -webkit-background-clip:text;
+
+  color:transparent;
+
 }
